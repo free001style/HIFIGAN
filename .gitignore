@@ -116,3 +116,4 @@ __MACOSX/
 .DS_Store
 
 test.py
+tmp.ipynb

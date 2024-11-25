@@ -1,5 +1,8 @@
 import torch
 import torch.nn as nn
+from torch.nn.utils.parametrizations import weight_norm
+
+from src.model.layers.conv import Conv
 
 
 class SubMPD(nn.Module):
@@ -9,14 +12,15 @@ class SubMPD(nn.Module):
         self.layers = nn.ModuleList(
             [
                 nn.Sequential(
-                    nn.Conv2d(
+                    Conv(
                         1 if i == 0 else 2 ** (5 + i),
                         2 ** (6 + i),
                         (5, 1),
                         (3, 1),
                         (2, 0),
-                    ),
-                    nn.LeakyReLU(0.1),
+                        activation=nn.LeakyReLU(0.1),
+                        normalization=weight_norm,
+                    )
                 )
                 for i in range(4)
             ]
@@ -24,10 +28,16 @@ class SubMPD(nn.Module):
         self.output_conv = nn.ModuleList(
             [
                 nn.Sequential(
-                    nn.Conv2d(2**9, 1024, (5, 1), padding="same"),
-                    nn.LeakyReLU(0.1),
+                    Conv(
+                        2**9,
+                        1024,
+                        (5, 1),
+                        padding="same",
+                        activation=nn.LeakyReLU(0.1),
+                        normalization=weight_norm,
+                    )
                 ),
-                nn.Conv2d(1024, 1, (3, 1), padding="same"),
+                Conv(1024, 1, (3, 1), padding="same", normalization=weight_norm),
             ]
         )
 
@@ -35,7 +45,7 @@ class SubMPD(nn.Module):
         x = predict.unsqueeze(1)
         b, c, t = x.shape
         if t % self.p:
-            x = torch.nn.functional.pad(x, (0, self.p - t % self.p), "constant", 0)
+            x = nn.functional.pad(x, (0, self.p - t % self.p), "constant", 0)
         x = x.view(b, c, x.shape[-1] // self.p, self.p)
         feats = []
         for layer in self.layers:

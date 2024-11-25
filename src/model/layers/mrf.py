@@ -1,6 +1,8 @@
 import torch
 import torch.nn as nn
 
+from src.model.layers.conv import Conv
+
 
 class ResBlock(nn.Module):
     def __init__(self, in_channels, kernel_size, dilation):
@@ -9,12 +11,13 @@ class ResBlock(nn.Module):
             *[
                 nn.Sequential(
                     nn.LeakyReLU(0.1),
-                    nn.Conv1d(
+                    Conv(
                         in_channels,
                         in_channels,
                         kernel_size,
                         dilation=dilation[i],
                         padding="same",
+                        is_2d=False,
                     ),
                 )
                 for i in range(len(dilation))
@@ -30,7 +33,6 @@ class ResBlock(nn.Module):
 class MRFBlock(nn.Module):
     def __init__(self, in_channels, kernel_size, dilation):
         super().__init__()
-        # print(len(dilation))
         self.layers = nn.Sequential(
             *[
                 ResBlock(in_channels, kernel_size, dilation[i])

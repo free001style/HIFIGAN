@@ -1,5 +1,6 @@
 import torch.nn as nn
 
+from src.model.layers.conv import Conv
 from src.model.layers.mrf import MRF
 
 
@@ -34,9 +35,7 @@ class Generator(nn.Module):
         mrf_dilation=[[[1, 1], [3, 1], [5, 1]]] * 3,
     ):
         super().__init__()
-        self.input_conv = nn.Conv1d(
-            in_channels, hidden_dim, 7, padding="same", bias=False
-        )
+        self.input_conv = Conv(in_channels, hidden_dim, 7, padding="same", is_2d=False)
         self.layers = nn.Sequential(
             *[
                 GeneratorBlock(
@@ -50,28 +49,17 @@ class Generator(nn.Module):
             ]
         )
         self.relu = nn.LeakyReLU(0.1)
-        self.output_conv = nn.Conv1d(
-            hidden_dim // 2 ** (len(kernels)), 1, 7, padding="same", bias=False
+        self.output_conv = Conv(
+            hidden_dim // 2 ** (len(kernels)),
+            1,
+            7,
+            padding="same",
+            activation=nn.Tanh(),
+            is_2d=False,
         )
-        self.tanh = nn.Tanh()
 
     def forward(self, spectrogram, **batch):
         x = self.input_conv(spectrogram)
         x = self.layers(x)
-        predict = self.tanh(self.output_conv(self.relu(x)))
+        predict = self.output_conv(self.relu(x))
         return {"predict": predict[:, 0, :]}
-
-    def __str__(self):
-        """
-        Model prints with the number of parameters.
-        """
-        all_parameters = sum([p.numel() for p in self.parameters()])
-        trainable_parameters = sum(
-            [p.numel() for p in self.parameters() if p.requires_grad]
-        )
-
-        result_info = super().__str__()
-        result_info = result_info + f"\nAll parameters: {all_parameters}"
-        result_info = result_info + f"\nTrainable parameters: {trainable_parameters}"
-
-        return result_info
