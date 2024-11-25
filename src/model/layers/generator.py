@@ -58,4 +58,20 @@ class Generator(nn.Module):
     def forward(self, spectrogram, **batch):
         x = self.input_conv(spectrogram)
         x = self.layers(x)
-        return self.tanh(self.output_conv(self.relu(x)))
+        predict = self.tanh(self.output_conv(self.relu(x)))
+        return {"predict": predict[:, 0, :]}
+
+    def __str__(self):
+        """
+        Model prints with the number of parameters.
+        """
+        all_parameters = sum([p.numel() for p in self.parameters()])
+        trainable_parameters = sum(
+            [p.numel() for p in self.parameters() if p.requires_grad]
+        )
+
+        result_info = super().__str__()
+        result_info = result_info + f"\nAll parameters: {all_parameters}"
+        result_info = result_info + f"\nTrainable parameters: {trainable_parameters}"
+
+        return result_info

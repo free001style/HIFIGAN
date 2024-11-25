@@ -8,6 +8,7 @@ Generator:
   mrf_dilation: [ [ [ 1, 1 ], [ 3, 1 ], [ 5, 1 ] ] ,  [ [ 1, 1 ], [ 3, 1 ], [ 5, 1 ] ] ,  [ [ 1, 1 ], [ 3, 1 ], [ 5, 1 ] ] ]
 MultiPeriodDiscriminator:
   _target_: src.model.MultiPeriodDiscriminator
+  p: [ 2, 3, 5, 7, 11 ]
 
 MultiScaleDiscriminator:
   _target_: src.model.MultiScaleDiscriminator
