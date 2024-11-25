@@ -55,5 +55,5 @@ class MRF(nn.Module):
     def forward(self, x):
         out = torch.zeros_like(x)
         for layer in self.layers:
-            out += layer(x)
+            out = out + layer(x)
         return out
