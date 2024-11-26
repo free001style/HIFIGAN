@@ -1,0 +1,6 @@
+g_loss:
+  _target_: src.loss.GeneratorLoss
+  mel_lambda: 45
+  fm_lambda: 2
+d_loss:
+  _target_: src.loss.DiscriminatorLoss

@@ -1,3 +1,4 @@
 train:
   _target_: src.datasets.LJSpeechDataset
+  max_audio_length: 6
   limit: 1

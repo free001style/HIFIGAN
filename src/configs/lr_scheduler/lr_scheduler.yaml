@@ -1,0 +1,6 @@
+g_lr_scheduler:
+  _target_: torch.optim.lr_scheduler.ExponentialLR
+  gamma: 0.999
+d_lr_scheduler:
+  _target_: torch.optim.lr_scheduler.ExponentialLR
+  gamma: 0.999
