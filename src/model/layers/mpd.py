@@ -71,4 +71,9 @@ class MultiPeriodDiscriminator(nn.Module):
             out, feats = disc(audio)
             out_real.append(out)
             feats_real.append(feats)
-        return out_fake, feats_fake, out_real, feats_real
+        return {
+            "mpd_out_fake": out_fake,
+            "mpd_feats_fake": feats_fake,
+            "mpd_out_real": out_real,
+            "mpd_feats_real": feats_real,
+        }

@@ -110,4 +110,9 @@ class MultiScaleDiscriminator(nn.Module):
             out_real.append(out)
             feats_real.append(feats)
             audio = nn.functional.adaptive_avg_pool1d(audio, audio.shape[1] // 2)
-        return out_fake, feats_fake, out_real, feats_real
+        return {
+            "msd_out_fake": out_fake,
+            "msd_feats_fake": feats_fake,
+            "msd_out_real": out_real,
+            "msd_feats_real": feats_real,
+        }

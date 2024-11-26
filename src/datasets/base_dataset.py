@@ -9,6 +9,8 @@ from torch.utils.data import Dataset
 
 logger = logging.getLogger(__name__)
 
+SCALE_FACTOR = 87 * 256
+
 
 class BaseDataset(Dataset):
     """
@@ -76,20 +78,20 @@ class BaseDataset(Dataset):
         audio = self.load_audio(audio_path)
         instance_data = {
             "audio": self.limit_audio(audio, length),
-            "max_audio_length": self.max_audio_length * self.target_sr,
+            "max_audio_length": self.max_audio_length * SCALE_FACTOR,
             "audio_path": audio_path,
         }
         instance_data = self.preprocess_data(instance_data)
         return instance_data
 
     def limit_audio(self, audio, length):
-        if length <= self.max_audio_length:
+        if length * self.target_sr <= self.max_audio_length * SCALE_FACTOR:
             return audio
         else:
             start = np.random.randint(
-                0, int((length - self.max_audio_length) * self.target_sr)
+                0, int((length - self.max_audio_length) * SCALE_FACTOR)
             )
-            return audio[:, start : start + self.max_audio_length * self.target_sr]
+            return audio[:, start : start + self.max_audio_length * SCALE_FACTOR]
 
     def __len__(self):
         """
