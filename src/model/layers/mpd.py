@@ -59,7 +59,7 @@ class SubMPD(nn.Module):
 class MultiPeriodDiscriminator(nn.Module):
     def __init__(self, p=[2, 3, 5, 7, 11]):
         super().__init__()
-        self.discriminator = nn.ModuleList([SubMPD(p[i]) for i in range(len(p))])
+        self.discriminator = nn.ModuleList([SubMPD(p_) for p_ in p])
 
     def forward(self, predict, audio, **batch):
         out_fake, feats_fake, out_real, feats_real = [], [], [], []

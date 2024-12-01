@@ -119,8 +119,8 @@ class BaseTrainer:
         self.metrics = metrics
         self.train_metrics = MetricTracker(
             *self.config.writer.loss_names,
-            "g_grad_norm",
             "d_grad_norm",
+            "g_grad_norm",
             *[m.name for m in self.metrics["train"]],
             writer=self.writer,
         )
@@ -282,6 +282,8 @@ class BaseTrainer:
                     batch,
                     metrics=self.evaluation_metrics,
                 )
+            self.lr_scheduler["d_lr_scheduler"].step()
+            self.lr_scheduler["g_lr_scheduler"].step()
             self.writer.set_step(epoch * self.epoch_len, part)
             self._log_scalars(self.evaluation_metrics)
             self._log_batch(

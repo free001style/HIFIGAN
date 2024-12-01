@@ -35,7 +35,7 @@ class Conv(nn.Module):
             activation (nn.Module, optional): activation function. if None, no activation will be applied.
             is_2d (bool): if True, 2D convolution is used, otherwise 1D convolution.
         """
-        super(Conv, self).__init__()
+        super().__init__()
         self.conv = nn.Conv2d if is_2d else nn.Conv1d
         padding = (kernel_size - 1) // 2 if padding is None else padding
         self.conv = self.conv(

@@ -40,16 +40,15 @@ class Trainer(BaseTrainer):
         self.optimizer["g_optimizer"].zero_grad()
         self.optimizer["d_optimizer"].zero_grad()
 
-        requires_grad(self.model.Generator, False)
-        requires_grad(self.model.MultiPeriodDiscriminator, True)
-        requires_grad(self.model.MultiScaleDiscriminator, True)
-
         outputs = self.model.Generator(**batch)
         batch.update(outputs)
-
-        mpd_outputs = self.model.MultiPeriodDiscriminator(**batch)
+        mpd_outputs = self.model.MultiPeriodDiscriminator(
+            predict=batch["predict"].detach(), audio=batch["audio"], **batch
+        )
         batch.update(mpd_outputs)
-        msd_outputs = self.model.MultiScaleDiscriminator(**batch)
+        msd_outputs = self.model.MultiScaleDiscriminator(
+            predict=batch["predict"].detach(), audio=batch["audio"], **batch
+        )
         batch.update(msd_outputs)
 
         d_losses = self.criterion["d_loss"](**batch)
@@ -58,13 +57,6 @@ class Trainer(BaseTrainer):
         batch["d_loss"].backward()
         self._clip_grad_norm("d")
         self.optimizer["d_optimizer"].step()
-
-        requires_grad(self.model.Generator, True)
-        requires_grad(self.model.MultiPeriodDiscriminator, False)
-        requires_grad(self.model.MultiScaleDiscriminator, False)
-
-        outputs = self.model.Generator(**batch)
-        batch.update(outputs)
 
         batch["spectrogram_predict"] = self.batch_transforms.get("train")[
             "spectrogram"
@@ -81,13 +73,6 @@ class Trainer(BaseTrainer):
         batch["g_loss"].backward()
         self._clip_grad_norm("g")
         self.optimizer["g_optimizer"].step()
-
-        self.lr_scheduler["d_lr_scheduler"].step()
-        self.lr_scheduler["g_lr_scheduler"].step()
-
-        requires_grad(self.model.Generator, True)
-        requires_grad(self.model.MultiPeriodDiscriminator, True)
-        requires_grad(self.model.MultiScaleDiscriminator, True)
 
         # update metrics for each loss (in case of multiple losses)
         for loss_name in self.config.writer.loss_names:
