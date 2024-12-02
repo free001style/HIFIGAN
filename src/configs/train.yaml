@@ -2,7 +2,7 @@ defaults:
   - model: hifigan_train
   - writer: wandb
   - metrics: example
-  - datasets: onebatchtest
+  - datasets: ljspeech
   - dataloader: example
   - transforms: example
   - loss: hifigan
@@ -10,14 +10,14 @@ defaults:
   - lr_scheduler: lr_scheduler
   - _self_
 trainer:
-  log_step: 10
-  n_epochs: 1000
-  epoch_len: 10
+  log_step: 25
+  n_epochs: 10000
+  epoch_len: 100
   device_tensors: [ "spectrogram", "audio" ] # which tensors should be on device (ex. GPU)
   resume_from: null # null or path to the checkpoint dir with *.pth and config.yaml
   device: auto # device name or "auto"
   override: True # if True, will override the previous run with the same name
-  monitor: "min train_g_loss" # "off" or "max/min metric_name", i.e. our goal is to maximize/minimize metric
+  monitor: "min g_loss" # "off" or "max/min metric_name", i.e. our goal is to maximize/minimize metric
   save_period: 5 # checkpoint each save_period epochs in addition to the best epoch
   early_stop: ${trainer.n_epochs} # epochs for early stopping
   save_dir: "saved"

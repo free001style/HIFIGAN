@@ -2,6 +2,7 @@ from abc import abstractmethod
 
 import torch
 from numpy import inf
+from torch import GradScaler
 from torch.nn.utils import clip_grad_norm_
 from tqdm.auto import tqdm
 
@@ -71,6 +72,9 @@ class BaseTrainer:
         self.optimizer = optimizer
         self.lr_scheduler = lr_scheduler
         self.batch_transforms = batch_transforms
+
+        self.is_amp = config.trainer.get("is_amp", True)
+        self.scaler = GradScaler(device=self.device, enabled=self.is_amp)
 
         # define dataloaders
         self.train_dataloader = dataloaders["train"]
@@ -218,8 +222,6 @@ class BaseTrainer:
                     continue
                 else:
                     raise e
-            self.train_metrics.update("d_grad_norm", self._get_grad_norm("d"))
-            self.train_metrics.update("g_grad_norm", self._get_grad_norm("g"))
 
             # log current results
             if batch_idx % self.log_step == 0:
@@ -248,7 +250,8 @@ class BaseTrainer:
                 self.train_metrics.reset()
             if batch_idx + 1 >= self.epoch_len:
                 break
-
+        self.lr_scheduler["d_lr_scheduler"].step()
+        self.lr_scheduler["g_lr_scheduler"].step()
         logs = last_train_metrics
 
         # Run val/test
@@ -282,8 +285,6 @@ class BaseTrainer:
                     batch,
                     metrics=self.evaluation_metrics,
                 )
-            self.lr_scheduler["d_lr_scheduler"].step()
-            self.lr_scheduler["g_lr_scheduler"].step()
             self.writer.set_step(epoch * self.epoch_len, part)
             self._log_scalars(self.evaluation_metrics)
             self._log_batch(
@@ -391,11 +392,13 @@ class BaseTrainer:
         """
         if self.config["trainer"].get("max_grad_norm", None) is not None:
             if mode == "g":
+                self.scaler.unscale_(self.optimizer["g_optimizer"])
                 clip_grad_norm_(
                     self.model.Generator.parameters(),
                     self.config["trainer"]["max_grad_norm"],
                 )
             elif mode == "d":
+                self.scaler.unscale_(self.optimizer["d_optimizer"])
                 clip_grad_norm_(
                     list(self.model.MultiScaleDiscriminator.parameters())
                     + list(self.model.MultiPeriodDiscriminator.parameters()),

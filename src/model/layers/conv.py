@@ -48,7 +48,7 @@ class Conv(nn.Module):
             groups=groups,
             bias=bias,
         )
-        nn.init.xavier_uniform_(self.conv.weight, nn.init.calculate_gain("leaky_relu"))
+        # nn.init.xavier_uniform_(self.conv.weight, nn.init.calculate_gain("leaky_relu"))
         self.activation = activation
         if normalization is not None:
             self.conv = normalization(self.conv)

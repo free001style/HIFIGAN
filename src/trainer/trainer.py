@@ -1,12 +1,13 @@
 from pathlib import Path
 
 import pandas as pd
+import torch
+from torch import autocast
 
 import wandb
 from src.logger.utils import plot_spectrogram
 from src.metrics.tracker import MetricTracker
 from src.trainer.base_trainer import BaseTrainer
-from src.utils.utils import requires_grad
 
 
 class Trainer(BaseTrainer):
@@ -40,39 +41,49 @@ class Trainer(BaseTrainer):
         self.optimizer["g_optimizer"].zero_grad()
         self.optimizer["d_optimizer"].zero_grad()
 
-        outputs = self.model.Generator(**batch)
-        batch.update(outputs)
-        mpd_outputs = self.model.MultiPeriodDiscriminator(
-            predict=batch["predict"].detach(), audio=batch["audio"], **batch
-        )
-        batch.update(mpd_outputs)
-        msd_outputs = self.model.MultiScaleDiscriminator(
-            predict=batch["predict"].detach(), audio=batch["audio"], **batch
-        )
-        batch.update(msd_outputs)
+        with autocast(
+            device_type=self.device, enabled=self.is_amp, dtype=torch.float16
+        ):
+            outputs = self.model.Generator(**batch)
+            batch.update(outputs)
+            mpd_outputs = self.model.MultiPeriodDiscriminator(
+                predict=batch["predict"].detach(), audio=batch["audio"]
+            )
+            batch.update(mpd_outputs)
+            msd_outputs = self.model.MultiScaleDiscriminator(
+                predict=batch["predict"].detach(), audio=batch["audio"]
+            )
+            batch.update(msd_outputs)
 
-        d_losses = self.criterion["d_loss"](**batch)
-        batch.update(d_losses)
+            d_losses = self.criterion["d_loss"](**batch)
+            batch.update(d_losses)
 
-        batch["d_loss"].backward()
+        self.scaler.scale(batch["d_loss"]).backward()
         self._clip_grad_norm("d")
-        self.optimizer["d_optimizer"].step()
+        self.scaler.step(self.optimizer["d_optimizer"])
+        self.scaler.update()
+        metrics.update("d_grad_norm", self._get_grad_norm("d"))
 
         batch["spectrogram_predict"] = self.batch_transforms.get("train")[
             "spectrogram"
         ](batch["predict"])
 
-        mpd_outputs = self.model.MultiPeriodDiscriminator(**batch)
-        batch.update(mpd_outputs)
-        msd_outputs = self.model.MultiScaleDiscriminator(**batch)
-        batch.update(msd_outputs)
+        with autocast(
+            device_type=self.device, enabled=self.is_amp, dtype=torch.float16
+        ):
+            mpd_outputs = self.model.MultiPeriodDiscriminator(**batch)
+            batch.update(mpd_outputs)
+            msd_outputs = self.model.MultiScaleDiscriminator(**batch)
+            batch.update(msd_outputs)
 
-        g_losses = self.criterion["g_loss"](**batch)
-        batch.update(g_losses)
+            g_losses = self.criterion["g_loss"](**batch)
+            batch.update(g_losses)
 
-        batch["g_loss"].backward()
+        self.scaler.scale(batch["g_loss"]).backward()
         self._clip_grad_norm("g")
-        self.optimizer["g_optimizer"].step()
+        self.scaler.step(self.optimizer["g_optimizer"])
+        self.scaler.update()
+        metrics.update("g_grad_norm", self._get_grad_norm("g"))
 
         # update metrics for each loss (in case of multiple losses)
         for loss_name in self.config.writer.loss_names:
@@ -117,7 +128,8 @@ class Trainer(BaseTrainer):
                     audio[i].detach().cpu().numpy(), sample_rate=22050
                 ),
                 "predict": wandb.Audio(
-                    predict[i].detach().cpu().numpy(), sample_rate=22050
+                    predict[i].to(torch.float32).detach().cpu().numpy(),
+                    sample_rate=22050,
                 ),
             }
         self.writer.add_table(
