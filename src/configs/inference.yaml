@@ -4,6 +4,6 @@ defaults:
 dir_path: null
 text: null
 save_path: "test" # any name here, can be a dataset name
-from_pretrained: "data/other/model.pth" # path to the pretrained model
+from_pretrained: "data/other/model_best.pth" # path to the pretrained model
 device: auto # device name or "auto"
 seed: 1
