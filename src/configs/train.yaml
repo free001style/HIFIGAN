@@ -12,7 +12,7 @@ defaults:
 trainer:
   log_step: 25
   n_epochs: 10000
-  epoch_len: 100
+  epoch_len: 500
   device_tensors: [ "spectrogram", "audio" ] # which tensors should be on device (ex. GPU)
   resume_from: null # null or path to the checkpoint dir with *.pth and config.yaml
   device: auto # device name or "auto"
@@ -23,3 +23,4 @@ trainer:
   save_dir: "saved"
   seed: 1
   max_grad_norm: 10
+  is_amp: True

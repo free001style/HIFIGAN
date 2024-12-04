@@ -1,4 +1,8 @@
+from pathlib import Path
+
 from hydra.utils import instantiate
+
+from src.utils.io_utils import ROOT_PATH
 
 
 def get_losses(config, device):
@@ -39,3 +43,16 @@ def get_lr_schedulers(config, optimizers):
 def requires_grad(model, flag=True):
     for p in model.parameters():
         p.requires_grad = flag
+
+
+def get_text_from_dir(path):
+    path = ROOT_PATH / path
+    texts = []
+    for path in (Path(path) / "transcriptions").iterdir():
+        if path.suffix == ".txt":
+            entry = {}
+            with path.open() as f:
+                entry["text"] = f.read().strip()
+            entry["name"] = path.stem
+            texts.append(entry)
+    return texts
