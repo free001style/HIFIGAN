@@ -40,7 +40,7 @@ def main(config):
 
     # build model architecture, then print to console
     model = instantiate(config.model).to(device)
-    # print(model)
+    print(model)
 
     # save_path for model predictions
     save_path = ROOT_PATH / "data" / "saved" / config.save_path

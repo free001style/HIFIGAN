@@ -79,7 +79,7 @@ To reproduce this model, run the following command:
    python train.py
    ```
 
-It takes around hours to train model from scratch on A100 GPU.
+It takes around 3 days to train model from scratch on A100 GPU.
 
 ## Final results
 

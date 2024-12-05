@@ -3,6 +3,10 @@ import torch.nn as nn
 
 
 class HiFiGAN(nn.Module):
+    """
+    HiFiGAN implementation based on https://arxiv.org/abs/2010.05646.
+    """
+
     def __init__(
         self, Generator, MultiScaleDiscriminator=None, MultiPeriodDiscriminator=None
     ):

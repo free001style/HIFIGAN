@@ -6,7 +6,15 @@ from src.model.layers.conv import Conv
 
 
 class SubMPD(nn.Module):
+    """
+    One of the Multi Period Discriminators
+    """
+
     def __init__(self, p):
+        """
+        Args:
+            p (int): The period for input audio.
+        """
         super().__init__()
         self.p = p
         self.layers = nn.ModuleList(
@@ -42,6 +50,13 @@ class SubMPD(nn.Module):
         )
 
     def forward(self, predict):
+        """
+        Args:
+            predict (Tensor): [B, T] audio tensor.
+        Returns:
+            output (Tensor): Output tensor of discriminator.
+            feats (list[Tensor]): Feature maps from all layers.
+        """
         x = predict.unsqueeze(1)
         b, c, t = x.shape
         if t % self.p:
@@ -57,11 +72,29 @@ class SubMPD(nn.Module):
 
 
 class MultiPeriodDiscriminator(nn.Module):
+    """
+    Multi Period Discriminator
+    """
+
     def __init__(self, p=[2, 3, 5, 7, 11]):
+        """
+        Args:
+            p (list[int]): List of periods for SubMPD.
+        """
         super().__init__()
         self.discriminator = nn.ModuleList([SubMPD(p_) for p_ in p])
 
     def forward(self, predict, audio, **batch):
+        """
+        Args:
+            predict (Tensor): [B, T] generated audio.
+            audio (Tensor): [B, T] ground truth audio.
+        Return:
+            mpd_out_fake (list[Tensor]): List of outputs from SubMPD for fake sample.
+            mpd_out_real (list[Tensor]): List of outputs from SubMPD for real sample.
+            mpd_feats_fake (list[list[Tensor]]): List of features from SubMPD layer for fake sample.
+            mpd_feats_real (list[list[Tensor]]): List of features from SubMPD layer for real sample.
+        """
         out_fake, feats_fake, out_real, feats_real = [], [], [], []
         for disc in self.discriminator:
             out, feats = disc(predict)

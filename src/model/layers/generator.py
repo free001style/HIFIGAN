@@ -34,6 +34,14 @@ class Generator(nn.Module):
         mrf_kernels=[3, 7, 11],
         mrf_dilation=[[[1, 1], [3, 1], [5, 1]]] * 3,
     ):
+        """
+        Args:
+            in_channels (int): Number of mels in input melspectrogram.
+            hidden_dim (int): Number of channels in first conv layer.
+            kernels (list[int]): Kernel sizes for each GeneratorBlock conv layer.
+            mrf_kernels (list[int]): Kernel sizes for MRF conv layer.
+            mrf_dilation (list[list[int]]): Dilation sizes for MRF conv layer.
+        """
         super().__init__()
         self.input_conv = Conv(in_channels, hidden_dim, 7, padding="same", is_2d=False)
         self.layers = nn.Sequential(
@@ -59,6 +67,12 @@ class Generator(nn.Module):
         )
 
     def forward(self, spectrogram, **batch):
+        """
+        Args:
+            spectrogram (Tensor): [B, n_mels, L] Melspectrogram of ground truth audio.
+        Returns:
+            predict (Tensor): [B, T] Predicted audio.
+        """
         x = self.input_conv(spectrogram)
         x = self.layers(x)
         predict = self.output_conv(self.relu(x))

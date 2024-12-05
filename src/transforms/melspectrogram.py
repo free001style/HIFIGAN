@@ -55,10 +55,11 @@ class MelSpectrogram(nn.Module):
 
     def forward(self, audio: torch.Tensor) -> torch.Tensor:
         """
-        :param audio: Expected shape is [B, T]
-        :return: Shape is [B, n_mels, T']
+        Args:
+            audio (Tensor): [B, T]
+        Returns:
+            mel (Tensor): [B, n_mels, T']
         """
-        # TODO
         mel = self.mel_spectrogram(audio).clamp_(min=1e-5).log_()
 
         return mel

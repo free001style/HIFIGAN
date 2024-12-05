@@ -32,16 +32,8 @@ class Inferencer(BaseTrainer):
             model (nn.Module): PyTorch model.
             config (DictConfig): run config containing inferencer config.
             device (str): device for tensors and model.
-            dataloaders (dict[DataLoader]): dataloaders for different
-                sets of data.
             save_path (str): path to save model predictions and other
                 information.
-            metrics (dict): dict with the definition of metrics for
-                inference (metrics[inference]). Each metric is an instance
-                of src.metrics.BaseMetric.
-            batch_transforms (dict[nn.Module] | None): transforms that
-                should be applied on the whole batch. Depend on the
-                tensor name.
             skip_model_load (bool): if False, require the user to set
                 pre-trained checkpoint path. Set this argument to True if
                 the model desirable weights are defined outside of the

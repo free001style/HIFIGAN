@@ -6,6 +6,15 @@ from src.utils.io_utils import ROOT_PATH
 
 
 def get_losses(config, device):
+    """
+    Create loss for generator and discriminators.
+
+    Args:
+        config (DictConfig): hydra experiment config.
+        device (str): device to use for batch transforms.
+    Returns:
+        losses (dict[loss]): dict containing losses by key.
+    """
     losses = instantiate(config.loss)
     for loss in losses:
         losses[loss] = losses[loss].to(device)
@@ -13,6 +22,15 @@ def get_losses(config, device):
 
 
 def get_optimizers(config, model):
+    """
+    Create optimizers for generator and discriminators.
+
+    Args:
+        config (DictConfig): hydra experiment config.
+        model (HiFiGAN): model with parameters to optimize.
+    Returns:
+        optimizers (dict[optimizer]): dict containing optimizers by key.
+    """
     g_trainable_params = filter(lambda p: p.requires_grad, model.Generator.parameters())
     d_trainable_params = filter(
         lambda p: p.requires_grad,
@@ -30,6 +48,15 @@ def get_optimizers(config, model):
 
 
 def get_lr_schedulers(config, optimizers):
+    """
+    Create lr schedulers for generator and discriminators.
+
+    Args:
+        config (DictConfig): hydra experiment config.
+        optimizers (dict[optimizer]): optimizers for schedulers.
+    Returns:
+        optimizers (dict[lr_scheduler]): dict containing lr_scheduler by key.
+    """
     return {
         "g_lr_scheduler": instantiate(
             config.lr_scheduler.g_lr_scheduler, optimizer=optimizers["g_optimizer"]

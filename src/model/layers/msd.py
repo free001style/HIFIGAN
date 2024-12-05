@@ -7,6 +7,10 @@ from src.model.layers.conv import Conv
 
 class SubMSD(nn.Module):
     def __init__(self, use_weight_norm=True):
+        """
+        Args:
+            use_weight_norm (bool): Whether to use weight norm instead of spectral norm.
+        """
         super().__init__()
         norm = weight_norm if use_weight_norm else spectral_norm
 
@@ -79,6 +83,13 @@ class SubMSD(nn.Module):
         self.output_conv = Conv(1024, 1, 3, padding=1, normalization=norm, is_2d=False)
 
     def forward(self, predict):
+        """
+        Args:
+             predict (Tensor): [B, T] audio tensor.
+        Returns:
+            output (Tensor): Output tensor of discriminator.
+            feats (list[Tensor]): Feature maps from all layers.
+        """
         x = predict.unsqueeze(1)
         feats = []
         for layer in self.layers:
@@ -88,6 +99,10 @@ class SubMSD(nn.Module):
 
 
 class MultiScaleDiscriminator(nn.Module):
+    """
+    Based on: https://arxiv.org/abs/1910.06711.
+    """
+
     def __init__(self):
         super().__init__()
         self.discriminator = nn.ModuleList(
@@ -99,6 +114,16 @@ class MultiScaleDiscriminator(nn.Module):
         )
 
     def forward(self, predict, audio, **batch):
+        """
+         Args:
+            predict (Tensor): [B, T] generated audio.
+            audio (Tensor): [B, T] ground truth audio.
+        Return:
+            msd_out_fake (list[Tensor]): List of outputs from SubMSD for fake sample.
+            msd_out_real (list[Tensor]): List of outputs from SubMSD for real sample.
+            msd_feats_fake (list[list[Tensor]]): List of features from SubMSD layer for fake sample.
+            msd_feats_real (list[list[Tensor]]): List of features from SubMSD layer for real sample.
+        """
         out_fake, feats_fake, out_real, feats_real = [], [], [], []
         for disc in self.discriminator:
             out, feats = disc(predict)

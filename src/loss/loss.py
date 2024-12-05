@@ -7,7 +7,17 @@ from src.loss.losses.melspec_loss import MelSpecLoss
 
 
 class GeneratorLoss(nn.Module):
+    """
+    Class for generator loss.
+    """
+
     def __init__(self, mel_lambda=45, fm_lambda=2):
+        """
+        Args:
+            mel_lambda (int): Coefficient of mel-spectrogram loss. Defaults to 45.
+            fm_lambda (int): Coefficient of feature matching loss. Defaults to 2.
+
+        """
         super().__init__()
         self.adv_loss = AdvGLoss()
         self.mel_loss = MelSpecLoss()
@@ -29,6 +39,10 @@ class GeneratorLoss(nn.Module):
 
 
 class DiscriminatorLoss(nn.Module):
+    """
+    Class for discriminator loss.
+    """
+
     def __init__(self):
         super().__init__()
         self.adv_loss = AdvDLoss()
