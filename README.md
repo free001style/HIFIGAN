@@ -85,23 +85,23 @@ It takes around hours to train model from scratch on A100 GPU.
 
 - `Deep Learning in Audio course at HSE University offers an exciting and challenging exploration of cutting-edge techniques in audio processing, from speech recognition to music analysis. With complex homeworks that push students to apply theory to real-world problems, it provides a hands-on, rigorous learning experience that is both demanding and rewarding.`
 
- <video src='https://github.com/user-attachments/assets/1eef968b-f39d-4b5e-9560-bc453068b891' width=180/>
+   <video src='https://github.com/user-attachments/assets/098ee311-339f-4019-81eb-2a4c82cdde60' width=180/>
 
 - `Dmitri Shostakovich was a Soviet-era Russian composer and pianist who became internationally known after the premiere of his First Symphony in 1926 and thereafter was regarded as a major composer.`
 
- <video src='https://github.com/user-attachments/assets/1eef968b-f39d-4b5e-9560-bc453068b891' width=180/>
+   <video src='https://github.com/user-attachments/assets/31b83e90-f8fb-4e3f-9465-84bd6ac838e6' width=180/>
 
 - `Lev Termen, better known as Leon Theremin was a Russian inventor, most famous for his invention of the theremin, one of the first electronic musical instruments and the first to be mass-produced.`
 
- <video src='https://github.com/user-attachments/assets/1eef968b-f39d-4b5e-9560-bc453068b891' width=180/>
+   <video src='https://github.com/user-attachments/assets/d16fce68-be23-4d91-8e1f-c35b28cd29ad' width=180/>
 
 - `Mihajlo Pupin was a founding member of National Advisory Committee for Aeronautics (NACA) on 3 March 1915, which later became NASA, and he participated in the founding of American Mathematical Society and American Physical Society.`
 
- <video src='https://github.com/user-attachments/assets/1eef968b-f39d-4b5e-9560-bc453068b891' width=180/>
+   <video src='https://github.com/user-attachments/assets/52a61188-0d58-4bb1-a8fe-b0fd0f128c77' width=180/>
 
 - `Leonard Bernstein was an American conductor, composer, pianist, music educator, author, and humanitarian. Considered to be one of the most important conductors of his time, he was the first American-born conductor to receive international acclaim.`
 
- <video src='https://github.com/user-attachments/assets/1eef968b-f39d-4b5e-9560-bc453068b891' width=180/>
+   <video src='https://github.com/user-attachments/assets/83a20157-0b1e-4372-96f5-c0eec6accbbd' width=180/>
 
 ## Credits
 
