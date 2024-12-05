@@ -15,7 +15,7 @@ This repository contains the implementation of [HiFiGAN](https://arxiv.org/pdf/2
 
 See the task assignment [here](https://github.com/markovka17/dla/tree/2024/hw3_nv).
 
-See [WandB report]() with implementation details and audio analysis.
+See [WandB report](https://wandb.ai/free001style/HiFiGAN/reports/HiFiGAN-vocoder--VmlldzoxMDQ1OTQ1NA) with implementation details and audio analysis.
 
 ## Installation
 
@@ -83,26 +83,27 @@ It takes around hours to train model from scratch on A100 GPU.
 
 ## Final results
 
-- `Deep Learning in Audio course at HSE University offers an exciting and challenging exploration of cutting-edge techniques in audio processing, from speech recognition to music analysis. With complex homeworks that push students to apply theory to real-world problems, it provides a hands-on, rigorous learning experience that is both demanding and rewarding.`
-
-   <video src='https://github.com/user-attachments/assets/098ee311-339f-4019-81eb-2a4c82cdde60' width=180/>
-
-- `Dmitri Shostakovich was a Soviet-era Russian composer and pianist who became internationally known after the premiere of his First Symphony in 1926 and thereafter was regarded as a major composer.`
-
-   <video src='https://github.com/user-attachments/assets/31b83e90-f8fb-4e3f-9465-84bd6ac838e6' width=180/>
-
-- `Lev Termen, better known as Leon Theremin was a Russian inventor, most famous for his invention of the theremin, one of the first electronic musical instruments and the first to be mass-produced.`
-
-   <video src='https://github.com/user-attachments/assets/d16fce68-be23-4d91-8e1f-c35b28cd29ad' width=180/>
-
 - `Mihajlo Pupin was a founding member of National Advisory Committee for Aeronautics (NACA) on 3 March 1915, which later became NASA, and he participated in the founding of American Mathematical Society and American Physical Society.`
 
-   <video src='https://github.com/user-attachments/assets/52a61188-0d58-4bb1-a8fe-b0fd0f128c77' width=180/>
+   <video src='https://github.com/user-attachments/assets/aad2700f-b51b-4b42-bf89-e28ff011fc71' width=180/>
 
 - `Leonard Bernstein was an American conductor, composer, pianist, music educator, author, and humanitarian. Considered to be one of the most important conductors of his time, he was the first American-born conductor to receive international acclaim.`
 
-   <video src='https://github.com/user-attachments/assets/83a20157-0b1e-4372-96f5-c0eec6accbbd' width=180/>
+   <video src='https://github.com/user-attachments/assets/ee730e23-279a-4128-860e-01164e27fec5' width=180/>
 
+- `Lev Termen, better known as Leon Theremin was a Russian inventor, most famous for his invention of the theremin, one of the first electronic musical instruments and the first to be mass-produced.`
+
+   <video src='https://github.com/user-attachments/assets/e01c68e8-c51f-47f6-b100-30703681d713' width=180/>
+
+- `Deep Learning in Audio course at HSE University offers an exciting and challenging exploration of cutting-edge techniques in audio processing, from speech recognition to music analysis. With complex homeworks that push students to apply theory to real-world problems, it provides a hands-on, rigorous learning experience that is both demanding and rewarding.`
+
+   <video src='https://github.com/user-attachments/assets/0d2dba62-e058-4afe-b26e-930c0e673762' width=180/>
+
+- `Dmitri Shostakovich was a Soviet-era Russian composer and pianist who became internationally known after the premiere of his First Symphony in 1926 and thereafter was regarded as a major composer.`
+
+   <video src='https://github.com/user-attachments/assets/4b4965b0-6f57-4b38-a5f3-a289de705fcb' width=180/>
+
+`WV-MOS=3.47` using text and `WV-MOS=2.15` using MelSpecs.
 ## Credits
 
 This repository is based on a [PyTorch Project Template](https://github.com/Blinorot/pytorch_project_template).
